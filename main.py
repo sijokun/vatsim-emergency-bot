@@ -12,7 +12,9 @@ import os
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
-SLEEP_TIME_SEC = int(os.environ.get("SLEEP_TIME_SEC")) if os.environ.get("SLEEP_TIME_SEC") else 15
+SLEEP_TIME_SEC = (
+    int(os.environ.get("SLEEP_TIME_SEC")) if os.environ.get("SLEEP_TIME_SEC") else 15
+)
 
 VATSIM_URL = "https://data.vatsim.net/v3/vatsim-data.json"
 MAP_URL = "https://api2.simaware.ca/api/livedata/live.json"
@@ -96,10 +98,10 @@ def check_for_emergency():
             message = f"{callsign} from {departure} to {arrival}"
             if pilot["transponder"] == "7600":
                 message += (
-                    f" reported loss of radio communication (squawk code 7600)"
+                    " reported loss of radio communication (squawk code 7600)"
                 )
             elif pilot["transponder"] == "7700":
-                message += f" reported emergency (squawk code 7700)"
+                message += " reported emergency (squawk code 7700)"
             else:
                 message += f" reported squawk code {pilot['transponder']}"
             message += f" on {aircraft_type}\n\n {map_url}"

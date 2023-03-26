@@ -4,10 +4,22 @@ Send alert to Telegram if aircraft reported emergency on the vatsim network (squ
 ## Usage
 Firstly you should install dependencies with:
 
-```python3 -m pip install -r requirements.txt```
+```shell
+poetry install
+```
 
 Then you should set environment variables TELEGRAM_TOKEN and TELEGRAM_CHAT_ID
 
+---
+If you still don't have `poetry`, you can easily install it via `pipx`
+
+```shell
+pip install pipx
+pipx install poetry
+```
+
 And finally you can start bot with 
 
-```python3 main.py```
+```shell
+python3 main.py
+```

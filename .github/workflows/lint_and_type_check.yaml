@@ -1,0 +1,32 @@
+name: Lint and check types
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 3
+      matrix:
+        python-version: [3.9, 3.10.10, 3.11]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+
+    - name: Install poetry
+      run: |
+        pip install pipx
+        pipx install poetry
+    - name: Install dependencies
+      run: |
+        poetry install
+    - name: Linting code by flake8
+      run: |
+        poetry run flake8 --config ./.flake8 .
+        poetry run black --config pyproject.toml --diff --check .
