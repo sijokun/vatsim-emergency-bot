@@ -24,7 +24,7 @@ class CustomFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-logger = logging.getLogger("corpusbot")
+logger = logging.getLogger("vatsim-emergency-bot")
 logger.setLevel(logging.DEBUG)
 
 # create console handler with a higher log level
