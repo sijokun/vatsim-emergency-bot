@@ -12,8 +12,7 @@ import os
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
-SLEEP_TIME_SEC = os.environ.get("SLEEP_TIME_SEC")
-
+SLEEP_TIME_SEC = int(os.environ.get("SLEEP_TIME_SEC")) if os.environ.get("SLEEP_TIME_SEC") else 15
 
 VATSIM_URL = "https://data.vatsim.net/v3/vatsim-data.json"
 MAP_URL = "https://api2.simaware.ca/api/livedata/live.json"
