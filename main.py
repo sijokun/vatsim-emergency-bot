@@ -1,5 +1,3 @@
-import logging
-
 from logger import logger
 
 import requests
@@ -62,14 +60,17 @@ def check_for_emergency():
                 f'Processing new emergency {pilot["callsign"]} with squawk {pilot["transponder"]}'
             )
 
+            print(pilot)
+
             # Add emergency to list of known emergencies
             active_emergencies[pilot["callsign"]] = pilot["transponder"]
 
             # Extract information about emergency from pilot object
-            departure = pilot["flight_plan"]["departure"]
-            arrival = pilot["flight_plan"]["arrival"]
-            aircraft_type = pilot["flight_plan"]["aircraft_short"]
-            callsign = pilot["callsign"]
+            flight_plan = pilot["flight_plan"] or {}
+            departure = flight_plan.get("departure", None)
+            arrival = flight_plan.get("arrival", None)
+            aircraft_type = flight_plan.get("aircraft_short", None)
+            callsign = pilot.get("callsign", "NO CALLSIGN")
 
             # TODO: Write log to SQL database
 
@@ -93,7 +94,10 @@ def check_for_emergency():
             map_url = get_map_url_by_callsign(pilot["callsign"])
 
             # Generate message about emergency
-            message = f"{callsign} from {departure} to {arrival}"
+            if arrival and departure:
+                message = f"{callsign} from {departure} to {arrival}"
+            else:
+                message = f"{callsign} without flightplan reported"
             if pilot["transponder"] == "7600":
                 message += (
                     f" reported loss of radio communication (squawk code 7600)"
@@ -102,7 +106,9 @@ def check_for_emergency():
                 message += f" reported emergency (squawk code 7700)"
             else:
                 message += f" reported squawk code {pilot['transponder']}"
-            message += f" on {aircraft_type}\n\n {map_url}"
+
+            if aircraft_type:
+                message += f" on {aircraft_type}\n\n {map_url}"
 
             logger.info(
                 f'Sending message about emergency of {pilot["callsign"]} to telegram'
@@ -120,7 +126,7 @@ def check_for_emergency():
         ):
             active_emergencies.pop(pilot["callsign"])
             message = f"{pilot['callsign']} is now longer squawking emergency, new squawk is {pilot['transponder']}."
-            logging.info(message)
+            logger.info(message)
 
     # Check if emergency flight went offline
     offline_callsigns = []
